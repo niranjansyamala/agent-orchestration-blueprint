@@ -1,0 +1,30 @@
+# --- OS Files ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+
+# --- Environment & Secrets ---
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# --- IDEs and Editors ---
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# --- Common Build Artifacts ---
+target/
+bin/
+out/
+dist/
+node_modules/
+.logs/
+*.log
