@@ -1,0 +1,7 @@
+apiVersion: v2
+name: fusion-arch
+description: Helm chart for the Fusion HCM recruiting multi-agent platform
+type: application
+version: 0.1.0
+appVersion: "0.0.1"
+

@@ -1,0 +1,50 @@
+global:
+  commonEnv:
+    SPRING_PROFILES_ACTIVE: dev
+    MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+    MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics
+    INTERNAL_JWT_ISSUER: recruiting-platform-dev
+
+services:
+  orchestration:
+    replicaCount: 1
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 2
+      targetCPUUtilizationPercentage: 75
+    env:
+      SPRING_DATA_REDIS_HOST: redis-dev.internal
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-dev.internal:5432/orchestration
+      LANGSMITH_TRACING: "false"
+    privateLoadBalancer:
+      enabled: false
+  execution:
+    replicaCount: 1
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 75
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-dev.internal:5432/execution
+      OCI_QUEUE_REQUESTS_ENDPOINT: https://dev.queue.oraclecloud.example/agent-execution-requests/messages
+      OCI_QUEUE_RESULTS_ENDPOINT: https://dev.queue.oraclecloud.example/agent-execution-results/messages
+      LANGSMITH_TRACING: "false"
+  registry:
+    replicaCount: 1
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 2
+      targetCPUUtilizationPercentage: 75
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-dev.internal:5432/registry
+  mcp:
+    replicaCount: 1
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 2
+      targetCPUUtilizationPercentage: 75
+

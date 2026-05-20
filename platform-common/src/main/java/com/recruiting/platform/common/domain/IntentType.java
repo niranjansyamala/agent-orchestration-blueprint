@@ -1,0 +1,10 @@
+package com.recruiting.platform.common.domain;
+
+public enum IntentType {
+    SCREEN_CANDIDATE,
+    SCHEDULE_INTERVIEW,
+    UPDATE_CANDIDATE_STATUS,
+    GENERATE_RECRUITER_BRIEF,
+    REQUEST_OFFER_APPROVAL,
+    GENERAL_RECRUITING_SUPPORT
+}

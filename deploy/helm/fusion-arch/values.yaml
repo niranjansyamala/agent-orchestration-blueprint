@@ -1,0 +1,172 @@
+global:
+  imageRegistry: ""
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+  podSecurityContext:
+    fsGroup: 10001
+    runAsNonRoot: true
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    capabilities:
+      drop:
+        - ALL
+  commonEnv:
+    SPRING_PROFILES_ACTIVE: prod
+    MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED: "true"
+    MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,metrics
+    INTERNAL_JWT_ISSUER: recruiting-platform
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+secrets:
+  create: false
+  name: fusion-arch-app-secrets
+  stringData:
+    OPENAI_API_KEY: ""
+    INTERNAL_JWT_SECRET: ""
+    SPRING_DATASOURCE_PASSWORD: ""
+    LANGSMITH_API_KEY: ""
+
+services:
+  orchestration:
+    enabled: true
+    replicaCount: 2
+    image:
+      repository: fusion-arch/orchestration-service
+      tag: ""
+    port: 8080
+    env:
+      OPENAI_MODEL: gpt-4.1-mini
+      SPRING_DATA_REDIS_HOST: redis.example.internal
+      SPRING_DATA_REDIS_PORT: "6379"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres.example.internal:5432/orchestration
+      SPRING_DATASOURCE_USERNAME: orchestration_app
+      LANGSMITH_TRACING: "false"
+    secretEnv:
+      - OPENAI_API_KEY
+      - INTERNAL_JWT_SECRET
+      - SPRING_DATASOURCE_PASSWORD
+      - LANGSMITH_API_KEY
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 6
+      targetCPUUtilizationPercentage: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+    privateLoadBalancer:
+      enabled: false
+      annotations:
+        service.beta.kubernetes.io/oci-load-balancer-internal: "true"
+        service.beta.kubernetes.io/oci-load-balancer-shape: flexible
+        service.beta.kubernetes.io/oci-load-balancer-shape-flex-min: "10"
+        service.beta.kubernetes.io/oci-load-balancer-shape-flex-max: "100"
+
+  execution:
+    enabled: true
+    replicaCount: 2
+    image:
+      repository: fusion-arch/execution-service
+      tag: ""
+    port: 8081
+    env:
+      OPENAI_MODEL: gpt-4.1-mini
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres.example.internal:5432/execution
+      SPRING_DATASOURCE_USERNAME: execution_app
+      TOOL_SELECTION_MAX_VISIBLE_TOOLS: "5"
+      OCI_QUEUE_REQUESTS_ENDPOINT: https://cell-1.queue.messaging.example.oraclecloud.com/queues/agent-execution-requests/messages
+      OCI_QUEUE_RESULTS_ENDPOINT: https://cell-1.queue.messaging.example.oraclecloud.com/queues/agent-execution-results/messages
+      OBJECT_STORAGE_NAMESPACE: tenantnamespace
+      OBJECT_STORAGE_BUCKET: recruiting-documents
+      LANGSMITH_TRACING: "false"
+    secretEnv:
+      - OPENAI_API_KEY
+      - INTERNAL_JWT_SECRET
+      - SPRING_DATASOURCE_PASSWORD
+      - LANGSMITH_API_KEY
+    resources:
+      requests:
+        cpu: 500m
+        memory: 768Mi
+      limits:
+        cpu: 2
+        memory: 2Gi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+
+  registry:
+    enabled: true
+    replicaCount: 2
+    image:
+      repository: fusion-arch/registry-service
+      tag: ""
+    port: 8082
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres.example.internal:5432/registry
+      SPRING_DATASOURCE_USERNAME: registry_app
+    secretEnv:
+      - INTERNAL_JWT_SECRET
+      - SPRING_DATASOURCE_PASSWORD
+    resources:
+      requests:
+        cpu: 150m
+        memory: 384Mi
+      limits:
+        cpu: 500m
+        memory: 768Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 4
+      targetCPUUtilizationPercentage: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+
+  mcp:
+    enabled: true
+    replicaCount: 2
+    image:
+      repository: fusion-arch/recruiting-mcp-server
+      tag: ""
+    port: 8083
+    env: {}
+    secretEnv:
+      - INTERNAL_JWT_SECRET
+    resources:
+      requests:
+        cpu: 150m
+        memory: 384Mi
+      limits:
+        cpu: 500m
+        memory: 768Mi
+    autoscaling:
+      enabled: true
+      minReplicas: 2
+      maxReplicas: 4
+      targetCPUUtilizationPercentage: 70
+    pdb:
+      enabled: true
+      minAvailable: 1
+

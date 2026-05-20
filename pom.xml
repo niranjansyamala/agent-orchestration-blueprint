@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.5</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.recruiting.platform</groupId>
+    <artifactId>multi-agent-platform</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>multi-agent-platform</name>
+    <description>Production-shaped multi-module recruiting agent platform</description>
+
+    <modules>
+        <module>platform-common</module>
+        <module>registry-service</module>
+        <module>execution-service</module>
+        <module>orchestration-service</module>
+        <module>recruiting-mcp-server</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <langchain4j.version>1.13.1</langchain4j.version>
+        <langgraph4j.version>1.8.14</langgraph4j.version>
+        <langsmith.version>0.1.0-alpha.19</langsmith.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-bom</artifactId>
+                <version>${langchain4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bsc.langgraph4j</groupId>
+                <artifactId>langgraph4j-bom</artifactId>
+                <version>${langgraph4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

@@ -1,0 +1,75 @@
+{{- $root := . -}}
+{{- range $name, $svc := .Values.services }}
+{{- if $svc.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fusion-arch.componentFullname" (dict "root" $root "name" $name) }}
+  labels:
+    {{- include "fusion-arch.labels" (dict "root" $root "name" $name) | nindent 4 }}
+spec:
+  {{- if not $svc.autoscaling.enabled }}
+  replicas: {{ $svc.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "fusion-arch.selectorLabels" (dict "root" $root "name" $name) | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "fusion-arch.selectorLabels" (dict "root" $root "name" $name) | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "fusion-arch.serviceAccountName" $root }}
+      {{- with $root.Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml $root.Values.global.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $name }}
+          image: {{ printf "%s%s:%s" (ternary "" (printf "%s/" $root.Values.global.imageRegistry) (eq $root.Values.global.imageRegistry "")) $svc.image.repository (default $root.Chart.AppVersion $svc.image.tag) | quote }}
+          imagePullPolicy: {{ $root.Values.global.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ $svc.port }}
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "fusion-arch.componentFullname" (dict "root" $root "name" $name) }}-config
+          env:
+            {{- range $envName := $svc.secretEnv }}
+            - name: {{ $envName }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $root.Values.secrets.name }}
+                  key: {{ $envName }}
+            {{- end }}
+          securityContext:
+            {{- toYaml $root.Values.global.containerSecurityContext | nindent 12 }}
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: http
+            initialDelaySeconds: 45
+            periodSeconds: 20
+            timeoutSeconds: 3
+          resources:
+            {{- toYaml $svc.resources | nindent 12 }}
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+{{- end }}
+{{- end }}
+

@@ -1,0 +1,17 @@
+{{- $root := . -}}
+{{- range $name, $svc := .Values.services }}
+{{- if and $svc.enabled $svc.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "fusion-arch.componentFullname" (dict "root" $root "name" $name) }}
+  labels:
+    {{- include "fusion-arch.labels" (dict "root" $root "name" $name) | nindent 4 }}
+spec:
+  minAvailable: {{ $svc.pdb.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "fusion-arch.selectorLabels" (dict "root" $root "name" $name) | nindent 6 }}
+---
+{{- end }}
+{{- end }}
