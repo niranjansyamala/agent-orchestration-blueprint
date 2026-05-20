@@ -21,10 +21,11 @@ Thumbs.db
 *.swp
 
 # --- Common Build Artifacts ---
-target/
+**/target/
 bin/
 out/
 dist/
 node_modules/
 .logs/
 *.log
+target/
