@@ -1,8 +1,0 @@
-/Users/nsyamala/Fusion HCM Arch/registry-service/src/main/java/com/recruiting/platform/registry/RegistryServiceApplication.java
-/Users/nsyamala/Fusion HCM Arch/registry-service/src/main/java/com/recruiting/platform/registry/api/RegistryController.java
-/Users/nsyamala/Fusion HCM Arch/registry-service/src/main/java/com/recruiting/platform/registry/entity/AgentRegistryEntity.java
-/Users/nsyamala/Fusion HCM Arch/registry-service/src/main/java/com/recruiting/platform/registry/repository/AgentRegistryRepository.java
-/Users/nsyamala/Fusion HCM Arch/registry-service/src/main/java/com/recruiting/platform/registry/security/AudienceValidator.java
-/Users/nsyamala/Fusion HCM Arch/registry-service/src/main/java/com/recruiting/platform/registry/security/InternalJwtProperties.java
-/Users/nsyamala/Fusion HCM Arch/registry-service/src/main/java/com/recruiting/platform/registry/security/SecurityConfig.java
-/Users/nsyamala/Fusion HCM Arch/registry-service/src/main/java/com/recruiting/platform/registry/service/AgentRegistryResolverService.java

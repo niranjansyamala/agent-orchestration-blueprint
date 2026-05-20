@@ -1,8 +1,0 @@
-com/recruiting/platform/registry/RegistryServiceApplication.class
-com/recruiting/platform/registry/service/AgentRegistryResolverService.class
-com/recruiting/platform/registry/security/SecurityConfig.class
-com/recruiting/platform/registry/api/RegistryController.class
-com/recruiting/platform/registry/entity/AgentRegistryEntity.class
-com/recruiting/platform/registry/security/AudienceValidator.class
-com/recruiting/platform/registry/repository/AgentRegistryRepository.class
-com/recruiting/platform/registry/security/InternalJwtProperties.class

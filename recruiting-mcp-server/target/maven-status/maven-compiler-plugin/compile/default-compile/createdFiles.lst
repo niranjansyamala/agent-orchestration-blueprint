@@ -1,6 +1,0 @@
-com/recruiting/platform/mcp/config/McpServerConfig.class
-com/recruiting/platform/mcp/security/AudienceValidator.class
-com/recruiting/platform/mcp/RecruitingMcpServerApplication.class
-com/recruiting/platform/mcp/security/InternalJwtProperties.class
-com/recruiting/platform/mcp/security/SecurityConfig.class
-com/recruiting/platform/mcp/catalog/RecruitingCatalogService.class
